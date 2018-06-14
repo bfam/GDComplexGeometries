@@ -3,6 +3,9 @@ global rk4a rk4b rk4c
 global vmapDG
 global vmapMor
 global mapMor
+global NODAL_DG_ROOT
+
+NODAL_DG_ROOT = '../nodal-dg'; % Either absolute or relative to `src` directory
 
 % Low storage Runge-Kutta coefficients
 rk4a = [            0.0 ...

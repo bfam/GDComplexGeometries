@@ -25,14 +25,36 @@ The following scripts are in the directory `acoustic2D`
   * `GDBox_curved_extrapolation` :: GD extrapolation basis curved box test
   * `GDDisk2D` :: Disk with curved GD elements using ghost basis
   * `GDDisk2D_extrapolation` :: Disk with curved GD elements using extrapolation
-  * `GDDisk2D_dt` :: Compute the maximum stable time step for the curved ghost basis GD disk mesh 
-  * `GDDisk2D_extrapolation_dt` :: Compute the maximum stable time step for the curved extrapolation GD disk mesh 
+  * `GDDisk2D_dt` :: Compute the maximum stable time step for the curved ghost basis GD disk mesh
+  * `GDDisk2D_extrapolation_dt` :: Compute the maximum stable time step for the curved extrapolation GD disk mesh
 
 ### GD and simplicial scripts
 The following scripts require the installation of the nodal DG codes from
 [HesthavenWarburton2008](http://dx.doi.org/10.1007/978-0-387-72067-8); bibtex
 reference below, and please cite if you use these codes! Installation
 instructions for these codes are given below.
+
+### Installing nodal-dg codes
+
+As noted above, the nodal-dg codes from
+[HesthavenWarburton2008](http://dx.doi.org/10.1007/978-0-387-72067-8) are used
+to handle the simplicial domain. The codes in this repository assume that these
+have have been installed in the base directory of this repository; if this is
+not the case then you should set the variable `NODAL_DG_ROOT` in the file
+`src/Globals2D_gdgd.m`
+
+To install the nodal-dg code you can use the git command:
+
+```
+git clone https://github.com/tcew/nodal-dg
+cd nodal-dg
+git checkout 50c09d1 -b gddg
+patch -p1 < ../nodal-dg.patch
+```
+
+The third command will ensure that you are on the commit that is known to work
+with the codes and the fourth command patches the nodal-dg codes so that they
+work with the gddg codes
 
 # References:
 ```
