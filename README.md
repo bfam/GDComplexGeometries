@@ -44,8 +44,42 @@ The following scripts are in the directory `acoustic2D`
   * `GDDGDisk2D_extrapolation` :: Disk with coupled extrapolation GD and curved simplicial elements
   * `GDDGDisk2D_dt` :: compute the maximum stable time step with coupled extrapolation GD and curved simplicial elements ### Installing nodal-dg codes
   * `GDDGInclusion` :: Run inclusion test problem
-  * `GDDGInclusion_error_interp` :: Do the convergence analysis to `GDDGInclusion` runs
+  * `GDDGInclusion_error_interp` :: Do the convergence analysis to `GDDGInclusion` runs (see note below)
   * `GDDGInclusion_geometry` :: Check to make sure the geometry interpolations are working
+
+Note on `GDDGInclusion_error_interp`: The data needed by this script must be
+generated prior to running. The data is stored in the directory
+`acoustic2D/data/` using [GIT LFS](https://git-lfs.github.com/).
+
+If you do not want to install GIT LFS, you can download the data directly with
+either the following wget or curl. If you use this method you may wish to
+locally untrack these files since they will make your respository larger if they
+raw binary is added. This can be done with the commands:
+
+```
+git rm --cached -r acoustic2D/data/
+git commit -m "untracking data files"
+```
+
+#### `wget` data download
+```
+wget https://media.githubusercontent.com/media/bfam/GDComplexGeometries/master/acoustic2D/data/data_n5_r0_t15.mat -O acoustic2D/data/data_n5_r0_t15.mat
+wget https://media.githubusercontent.com/media/bfam/GDComplexGeometries/master/acoustic2D/data/data_n5_r1_t15.mat -O acoustic2D/data/data_n5_r1_t15.mat
+wget https://media.githubusercontent.com/media/bfam/GDComplexGeometries/master/acoustic2D/data/data_n5_r2_t15.mat -O acoustic2D/data/data_n5_r2_t15.mat
+wget https://media.githubusercontent.com/media/bfam/GDComplexGeometries/master/acoustic2D/data/data_n7_r0_t15.mat -O acoustic2D/data/data_n7_r0_t15.mat
+wget https://media.githubusercontent.com/media/bfam/GDComplexGeometries/master/acoustic2D/data/data_n7_r1_t15.mat -O acoustic2D/data/data_n7_r1_t15.mat
+wget https://media.githubusercontent.com/media/bfam/GDComplexGeometries/master/acoustic2D/data/data_n7_r2_t15.mat -O acoustic2D/data/data_n7_r2_t15.mat
+```
+
+#### `curl` data download
+```
+curl https://media.githubusercontent.com/media/bfam/GDComplexGeometries/master/acoustic2D/data/data_n5_r0_t15.mat -o acoustic2D/data/data_n5_r0_t15.mat
+curl https://media.githubusercontent.com/media/bfam/GDComplexGeometries/master/acoustic2D/data/data_n5_r1_t15.mat -o acoustic2D/data/data_n5_r1_t15.mat
+curl https://media.githubusercontent.com/media/bfam/GDComplexGeometries/master/acoustic2D/data/data_n5_r2_t15.mat -o acoustic2D/data/data_n5_r2_t15.mat
+curl https://media.githubusercontent.com/media/bfam/GDComplexGeometries/master/acoustic2D/data/data_n7_r0_t15.mat -o acoustic2D/data/data_n7_r0_t15.mat
+curl https://media.githubusercontent.com/media/bfam/GDComplexGeometries/master/acoustic2D/data/data_n7_r1_t15.mat -o acoustic2D/data/data_n7_r1_t15.mat
+curl https://media.githubusercontent.com/media/bfam/GDComplexGeometries/master/acoustic2D/data/data_n7_r2_t15.mat -o acoustic2D/data/data_n7_r2_t15.mat
+```
 
 ### Installing nodal-dg codes
 As noted above, the nodal-dg codes from
