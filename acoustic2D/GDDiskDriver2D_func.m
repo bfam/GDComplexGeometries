@@ -36,6 +36,7 @@ else
 end
 
 addpath ../src
+addpath ../geo/disk
 
 Globals2D_gddg;
 
