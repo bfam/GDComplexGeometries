@@ -43,6 +43,9 @@ The following scripts are in the directory `acoustic2D`
   * `GDDGDisk2D_dt` :: compute the maximum stable time step with coupled ghost basis GD and curved simplicial elements ### Installing nodal-dg codes
   * `GDDGDisk2D_extrapolation` :: Disk with coupled extrapolation GD and curved simplicial elements
   * `GDDGDisk2D_dt` :: compute the maximum stable time step with coupled extrapolation GD and curved simplicial elements ### Installing nodal-dg codes
+  * `GDDGInclusion` :: Run inclusion test problem
+  * `GDDGInclusion_error_interp` :: Do the convergence analysis to `GDDGInclusion` runs
+  * `GDDGInclusion_geometry` :: Check to make sure the geometry interpolations are working
 
 ### Installing nodal-dg codes
 As noted above, the nodal-dg codes from
