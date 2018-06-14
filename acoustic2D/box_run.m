@@ -2,34 +2,36 @@ clear
 
 format short e
 
+% Mode number for each order
 k  = [1,  4, 7, 12, 15];
+
+% GD N for extrapolation and ghost basis methods
 Ne = [15 27 30 38 43];
 Ng = [11 24 23 30 34];
 
+% Some time step estimates
 dtDG  = [6.4396e-03   4.3856e-03   3.3445e-03   2.7091e-03   2.2770e-03];
 dtGDG = [1.6360e-02   1.0521e-02   7.2008e-03   5.4346e-03   4.5745e-03];
 dtGDE = [1.1878e-02   8.0147e-03   4.8555e-03   3.7588e-03   3.6733e-03];
 
-% 1
-% 4
-% 3
-% 4
-% 5
-
 for p = 1:5
+  % Compute error and timesteps for DG
   out = DGbox_func(p, dtDG(p)); dtDG(p) = out(1); dt0DG(p) = out(2);
   out = DGbox_func(p,  k(p)  ,  dtDG(p) / 10); errDG(p) = out(end);
   out = DGbox_func(p,  k(p)+1,  dtDG(p) / 10); errDG1(p) = out(end);
 
+  % Compute error and timesteps for extrapolation GD
   out = GDbox_func(p, 0, Ne(p), dtGDE(p)); dtGDE(p) = out(1); dt0GDE(p) = out(2);
   out = GDbox_func(p, 0, Ne(p)  , k(p), dtGDE(p) / 10); errGDE(p) = out(end);
   out = GDbox_func(p, 0, Ne(p)-1, k(p), dtGDE(p) / 10); errGDE1(p) = out(end);
 
+  % Compute error and timesteps for ghost basis GD
   out = GDbox_func(p, p, Ng(p), dtGDG(p)); dtGDG(p) = out(1); dt0GDG(p) = out(2);
   out = GDbox_func(p, p, Ng(p)  , k(p), dtGDG(p) / 10); errGDG(p) = out(end);
   out = GDbox_func(p, p, Ng(p)-1, k(p), dtGDG(p) / 10); errGDG1(p) = out(end);
 end
 
+% Check that the errors are correct for all the methods
 disp('errDG < 1e-3')
 disp(errDG(1:p) < 1e-3)
 disp('errDG1 > 1e-3')
@@ -52,6 +54,7 @@ disp([errGDE; errGDE1])
 disp('[errGDG; errGDG1]')
 disp([errGDG; errGDG1])
 
+% Display time step information
 disp('[dtGDE./dtDG;dtGDG./dtDG]')
 disp([dtGDE./dtDG;dtGDG./dtDG])
 disp('[dtDG;dtGDE;dtGDG]')
@@ -61,12 +64,14 @@ disp([dt0DG;dt0GDE;dt0GDG])
 disp('[dtDG;dtGDE;dtGDG]./[dt0DG;dt0GDE;dt0GDG]')
 disp([dtDG;dtGDE;dtGDG]./[dt0DG;dt0GDE;dt0GDG])
 
+% Scaling factors for GD
 q = 2*(1:5)+1;
 disp('(4*4^2* (q+1).*(q+2) / 2) ./ (Ne+1).^2')
 disp((4*4^2* (q+1).*(q+2) / 2) ./ (Ne+1).^2)
 disp('(4*4^2* (q+1).*(q+2) / 2) ./ (Ng+1+2*(1:5)).^2')
 disp((4*4^2* (q+1).*(q+2) / 2) ./ (Ng+1+2*(1:5)).^2)
 
+% Scaled time steps
 %{
 ldg = 2 / 2^2;
 hdg = ldg / 2;

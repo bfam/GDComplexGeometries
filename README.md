@@ -34,6 +34,10 @@ The following scripts require the installation of the nodal DG codes from
 reference below, and please cite if you use these codes! Installation
 instructions for these codes are given below.
 
+The following scripts are in the directory `acoustic2D`
+
+  * `box_run` :: script to check error and compute time step for simple box problem (runs simplicial, GD ghost basis, and GD extrapolation)
+
 ### Installing nodal-dg codes
 
 As noted above, the nodal-dg codes from
