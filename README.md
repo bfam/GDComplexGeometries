@@ -37,9 +37,14 @@ instructions for these codes are given below.
 The following scripts are in the directory `acoustic2D`
 
   * `box_run` :: script to check error and compute time step for simple box problem (runs simplicial, GD ghost basis, and GD extrapolation)
+  * `DGDisk2D` :: Disk with curved simplicial elements
+  * `DGDisk2D_dt` :: compute the maximum stable time step with curved simplicial elements
+  * `GDDGDisk2D` :: Disk with coupled ghost basis GD and curved simplicial elements
+  * `GDDGDisk2D_dt` :: compute the maximum stable time step with coupled ghost basis GD and curved simplicial elements ### Installing nodal-dg codes
+  * `GDDGDisk2D_extrapolation` :: Disk with coupled extrapolation GD and curved simplicial elements
+  * `GDDGDisk2D_dt` :: compute the maximum stable time step with coupled extrapolation GD and curved simplicial elements ### Installing nodal-dg codes
 
 ### Installing nodal-dg codes
-
 As noted above, the nodal-dg codes from
 [HesthavenWarburton2008](http://dx.doi.org/10.1007/978-0-387-72067-8) are used
 to handle the simplicial domain. The codes in this repository assume that these
