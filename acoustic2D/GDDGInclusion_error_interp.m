@@ -1,12 +1,12 @@
 clear
 
-addpath ../nodal-dg/Codes1.1/Codes1D
-addpath ../nodal-dg/Codes1.1/Codes2D
-addpath ../nodal-dg/Codes1.1/ServiceRoutines
+Globals2D_gddg
+addpath([NODAL_DG_ROOT, '/nodal-dg/Codes1.1/Codes1D'])
+addpath([NODAL_DG_ROOT, '/nodal-dg/Codes1.1/Codes2D'])
+addpath([NODAL_DG_ROOT, '/nodal-dg/Codes1.1/ServiceRoutines'])
 addpath ../src
 addpath ../geo/inclusion
 
-Globals2D_gddg
 Globals2D;
 
 % order of gd approximation

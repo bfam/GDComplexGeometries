@@ -15,13 +15,13 @@ function [T,err] = DGDisk2D_func(p, sr, mesh_base, root)
 
 fprintf('DGDisk2D_func(%3d, %3d, %s)\n', p, sr, mesh_base)
 
-addpath ../nodal-dg/Codes1.1/Codes1D
-addpath ../nodal-dg/Codes1.1/Codes2D
-addpath ../nodal-dg/Codes1.1/ServiceRoutines
+Globals2D_gddg
+addpath([NODAL_DG_ROOT, '/nodal-dg/Codes1.1/Codes1D'])
+addpath([NODAL_DG_ROOT, '/nodal-dg/Codes1.1/Codes2D'])
+addpath([NODAL_DG_ROOT, '/nodal-dg/Codes1.1/ServiceRoutines'])
 addpath ../src
 addpath ../geo/disk
 
-Globals2D_gddg
 Globals2D;
 
 % order of the DG

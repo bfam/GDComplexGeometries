@@ -20,13 +20,10 @@
 %                 L2 error at the final time
 function output = GDbox(p, Ng, N0, kx, dt)
 
-addpath ../nodal-dg/Codes1.1/Codes1D
-addpath ../nodal-dg/Codes1.1/Codes2D
-addpath ../nodal-dg/Codes1.1/ServiceRoutines
 addpath ../src
 addpath ../geo/box
 
-Globals2D_gddg;
+Globals2D_gddg
 
 % order of gd approximation
 
