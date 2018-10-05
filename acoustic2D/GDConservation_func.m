@@ -9,13 +9,20 @@
 %           ::     coordinates (this ensures that the conforming curved meshes
 %           ::     have same surface metric terms)
 %   Ng      :: Number of free ghost points to use
+%   alpha   :: (optional) upwinding parameter: 1 -> upwind (default)
+%           ::                                 0 -> central
 % Outputs:
 %   T    :: time
 %   eng  :: energy
 %   m_pr :: L2 norm of pressure
 %   m_v1 :: L2 norm of v1
 %   m_v2 :: L2 norm of v2
-function [T, eng, m_pr, m_v1, m_v2] = GDConservation_func(p, N0, finterp, Ng)
+function [T, eng, m_pr, m_v1, m_v2] = GDConservation_func(p, N0, finterp, ...
+                                                          Ng, alpha)
+
+if nargin < 5
+  alpha = 1;
+end
 
 addpath ../src
 Globals2D_gddg;
@@ -116,6 +123,11 @@ plot_mesh(OP.B);
 
 % Estimate time step
 dt = compute_dt(OP)/2;
+if alpha == 1
+  dt = compute_dt(OP) / 2;
+else
+  dt = compute_dt(OP) / 10;
+end
 
 % clear this so we do not try to calate error
 clear Exact2D
@@ -142,5 +154,6 @@ drawnow
 % Run the simulation
 FinalTime = 1;
 Ntsteps = ceil(FinalTime/dt); dt = FinalTime/Ntsteps;
+OP.alpha = alpha;
 [~,~,~,T,~,eng,~,~,m_pr,m_v1,m_v2] = ...
   Acoustic2D(OP, v1, v2, pr, dt, Ntsteps, 2*abs(p)+2, true);

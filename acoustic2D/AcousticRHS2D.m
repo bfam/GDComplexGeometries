@@ -6,6 +6,9 @@ Globals2D_gddg;
 rhsv1 = zeros(size(v1)); rhsv2 = zeros(size(v2)); rhspr = zeros(size(pr));
 
 alpha = 1;
+if isfield(OP, 'alpha')
+  alpha = OP.alpha;
+end
 
 for k = 1:length(OP.B)
   B = OP.B{k};
