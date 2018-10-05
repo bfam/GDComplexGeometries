@@ -2,10 +2,10 @@
 % Inputs:
 %   p       :: GD polynomial order is 2*p+1
 %   N0      :: GD grid uses N0+1 grid points
-%   do_proj :: 0 = use L2 projected coordinates
+%   finterp :: 0 = use L2 projected coordinates
 %           :: 1 = make curved faces coordinates to be polynomial order 2*p+1
 %           ::     after L2 projecting the coordinates
-%           :: 2 = resample the curved faces after after L2 projecting the
+%           :: 2 = resample the curved faces after L2 projecting the
 %           ::     coordinates (this ensures that the conforming curved meshes
 %           ::     have same surface metric terms)
 %   Ng      :: Number of free ghost points to use
@@ -15,7 +15,7 @@
 %   m_pr :: L2 norm of pressure
 %   m_v1 :: L2 norm of v1
 %   m_v2 :: L2 norm of v2
-function [T, eng, m_pr, m_v1, m_v2] = GDConservation_func(p, N0, do_proj, Ng)
+function [T, eng, m_pr, m_v1, m_v2] = GDConservation_func(p, N0, finterp, Ng)
 
 addpath ../src
 Globals2D_gddg;
@@ -36,37 +36,37 @@ y = @(r,s) -r .* sin(beta(r,s)) + s .* cos(beta(r,s));
 grid{1}.x1 = @(r1, r2) x((r1-1)/2, (r2-1)/2);
 grid{1}.x2 = @(r1, r2) y((r1-1)/2, (r2-1)/2);
 grid{1}.N1 = N0(1); grid{1}.N2 = N0(1);
-if do_proj == 1
-  grid{1}.proj = [ 0, 20,  0, 20];
-elseif do_proj == 2
-  grid{1}.proj = [ 0, 0,  0, 0];
+if finterp == 1
+  grid{1}.interp = [ 0, 1,  0, 1];
+elseif finterp == 2
+  grid{1}.interp = [ 0, 0,  0, 0];
 end
 
 grid{2}.x1 = @(r1, r2) x((r1+1)/2, (r2-1)/2);
 grid{2}.x2 = @(r1, r2) y((r1+1)/2, (r2-1)/2);
 grid{2}.N1 = N0(2); grid{2}.N2 = N0(2);
-if do_proj == 1
-  grid{2}.proj = [20,  0,  0, 20];
-elseif do_proj == 2
-  grid{2}.proj = [ 0, 0,  0, 0];
+if finterp == 1
+  grid{2}.interp = [1,  0,  0, 1];
+elseif finterp == 2
+  grid{2}.interp = [ 0, 0,  0, 0];
 end
 
 grid{3}.x1 = @(r1, r2) x((r1-1)/2, (r2+1)/2);
 grid{3}.x2 = @(r1, r2) y((r1-1)/2, (r2+1)/2);
 grid{3}.N1 = N0(3); grid{3}.N2 = N0(3);
-if do_proj == 1
-  grid{3}.proj = [ 0, 20, 20,  0];
-elseif do_proj == 2
-  grid{3}.proj = [ 0, 0,  0, 0];
+if finterp == 1
+  grid{3}.interp = [ 0, 1, 1,  0];
+elseif finterp == 2
+  grid{3}.interp = [ 0, 0,  0, 0];
 end
 
 grid{4}.x1 = @(r1, r2) x((r1+1)/2, (r2+1)/2);
 grid{4}.x2 = @(r1, r2) y((r1+1)/2, (r2+1)/2);
 grid{4}.N1 = N0(4); grid{4}.N2 = N0(4);
-if do_proj == 1
-  grid{4}.proj = [20,  0, 20,  0];
-elseif do_proj == 2
-  grid{4}.proj = [ 0, 0,  0, 0];
+if finterp == 1
+  grid{4}.interp = [1,  0, 1,  0];
+elseif finterp == 2
+  grid{4}.interp = [ 0, 0,  0, 0];
 end
 
 % Create the GD element operators

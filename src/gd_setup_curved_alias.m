@@ -9,17 +9,16 @@
 %                       grid.x2(r1, r2)
 %                     which define the (x1,x2) coordinates for this block
 %                     can also optionally contain an array of length 4
-%                       grid.proj = [f1 f2 f3 f4]
+%                       grid.interp = [f1 f2 f3 f4]
 %                     which
 %                       -> fj == 0 will replace the L2 projected coordinate
 %                          points along face j with the GD point interpolated
 %                          values from functions grid.x1 and grid.x2
 %                       -> If fj > 0 then values of coordinates along face j
 %                          will be replaced with coordinate values defined by
-%                          projecting grid.x1 and grid.x2 along face j to a
-%                          polynomial of degree 2*p+1 (where the L2 projection
-%                          is approximated using a fj point Legendre-Gaussian
-%                          quadrature rule). 
+%                          interpolating grid.x1 and grid.x2 along face j to a
+%                          polynomial of degree 2*p+1; Chebyshev points of the
+%                          2nd kind are used
 %                       -> If fj < 0 then values along face j remain unchanged
 %                          (e.g., just the values that arose from the L2
 %                          projection of the volume coordinate transform into
@@ -192,33 +191,33 @@ function [B] = gd_setup_curved_alias(N1, N2, p, quad_order, grid, Ng, err_quad_o
   B.r2 = r2(:);
 
   % Project out the face modes is necessary
-  if isfield(grid, 'proj')
+  if isfield(grid, 'interp')
     q = 2*p+1;
-    if grid.proj(1) > 0
-      x1(:,Ng+1) = project_out_face(r2_1d, @(s) grid.x1(-1, s), q, grid.proj(1));
-      x2(:,Ng+1) = project_out_face(r2_1d, @(s) grid.x2(-1, s), q, grid.proj(1));
-    elseif grid.proj(1) == 0
+    if grid.interp(1) > 0
+      x1(:,Ng+1) = polynomial_interpolate_fn(r2_1d, @(s) grid.x1(-1, s), q);
+      x2(:,Ng+1) = polynomial_interpolate_fn(r2_1d, @(s) grid.x2(-1, s), q);
+    elseif grid.interp(1) == 0
       x1(:,Ng+1) = grid.x1(-1, r2_1d);
       x2(:,Ng+1) = grid.x2(-1, r2_1d);
     end
-    if grid.proj(2) > 0
-      x1(:,Ng+N1+1) = project_out_face(r2_1d, @(s) grid.x1(1, s), q, grid.proj(2));
-      x2(:,Ng+N1+1) = project_out_face(r2_1d, @(s) grid.x2(1, s), q, grid.proj(2));
-    elseif grid.proj(2) == 0
+    if grid.interp(2) > 0
+      x1(:,Ng+N1+1) = polynomial_interpolate_fn(r2_1d, @(s) grid.x1(1, s), q);
+      x2(:,Ng+N1+1) = polynomial_interpolate_fn(r2_1d, @(s) grid.x2(1, s), q);
+    elseif grid.interp(2) == 0
       x1(:,Ng+N1+1) = grid.x1(1, r2_1d);
       x2(:,Ng+N1+1) = grid.x2(1, r2_1d);
     end
-    if grid.proj(3) > 0
-      x1(Ng+1,:) = project_out_face(r1_1d, @(r) grid.x1(r, -1), q, grid.proj(3));
-      x2(Ng+1,:) = project_out_face(r1_1d, @(r) grid.x2(r, -1), q, grid.proj(3));
-    elseif grid.proj(3) == 0
+    if grid.interp(3) > 0
+      x1(Ng+1,:) = polynomial_interpolate_fn(r1_1d, @(r) grid.x1(r, -1), q);
+      x2(Ng+1,:) = polynomial_interpolate_fn(r1_1d, @(r) grid.x2(r, -1), q);
+    elseif grid.interp(3) == 0
       x1(Ng+1, :) = grid.x1(r1_1d, -1);
       x2(Ng+1, :) = grid.x2(r1_1d, -1);
     end
-    if grid.proj(4) > 0
-      x1(Ng+N2+1,:) = project_out_face(r1_1d, @(r) grid.x1(r, 1), q, grid.proj(4));
-      x2(Ng+N2+1,:) = project_out_face(r1_1d, @(r) grid.x2(r, 1), q, grid.proj(4));
-    elseif grid.proj(4) == 0
+    if grid.interp(4) > 0
+      x1(Ng+N2+1,:) = polynomial_interpolate_fn(r1_1d, @(r) grid.x1(r, 1), q);
+      x2(Ng+N2+1,:) = polynomial_interpolate_fn(r1_1d, @(r) grid.x2(r, 1), q);
+    elseif grid.interp(4) == 0
       x1(Ng+N2+1, :) = grid.x1(r1_1d, 1);
       x2(Ng+N2+1, :) = grid.x2(r1_1d, 1);
     end
@@ -411,37 +410,13 @@ function [B] = gd_setup_curved_alias(N1, N2, p, quad_order, grid, Ng, err_quad_o
   B.error = E;
 end
 
-% Projects the function x into a polynomial of degree Nc using Nf+1 quadrature
-% points for the L2 projection. Evaluates the resulting polynomial at points
-% r_gd
-function [xf] = project_out_face(r_gd, x, Nc, Nf)
-  % Coarse and fine quadrature rule
-  [rq, wq] = gauss_cofs(Nf+1);
-  rf_c = cos(pi * (0:Nf)'/Nf);
-  rc_c = cos(pi * (0:Nc)'/Nc);
-
-  % coarse to fine interpolation
-  Ic2q = lagrange_interpolation_matrix(rc_c, rq);
-  If2q = lagrange_interpolation_matrix(rf_c, rq);
-  Ic2f = lagrange_interpolation_matrix(rc_c, rf_c);
+% interpolates the function x with an enpoint preserving polynomial of degree Nc
+% Evaluates the resulting polynomial at points r_gd
+function [xf] = polynomial_interpolate_fn(r_gd, x, Nc)
+  % Chebyshev points of the 2nd kind
+  rc_c = sin(pi * linspace(-1/2, 1/2, Nc+1)');
   Ic2gd = lagrange_interpolation_matrix(rc_c, r_gd);
-
-  Af = Ic2f' * If2q' * diag(wq) * If2q;
-  Mc = Ic2q' * diag(wq) * Ic2q;
-
-  % x and y on the fine quadrature grid
-  xf = x(rf_c);
-
-  % remove linear component
-  lx = x(-1) * (1-rf_c) / 2 + x(1) * (1+rf_c) / 2;
-  xf = xf - lx;
-
-  % add back linear component
-  lx = x(-1) * (1-rc_c) / 2 + x(1) * (1+rc_c) / 2;
-  xc = [0; Mc(2:end-1,2:end-1) \ (Af(2:end-1,:) * xf); 0];
-  xc = xc + lx;
-
-  xf = Ic2gd * xc;
+  xf = Ic2gd * x(rc_c);
 end
 
 % Build the matrix which extrapolates to ghost points using N+1 GD interior
