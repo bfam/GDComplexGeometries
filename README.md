@@ -20,6 +20,7 @@ The weight adjusted projection tests can be run using the script
 The following scripts are in the directory `acoustic2D`
 
   * `GDConservation` :: GD conservation test
+  * `GDConservation_central` :: GD conservation test with central flux
   * `GDConstPres` :: GD constant-state preservation test
   * `GDBox_curved` :: GD ghost basis curved box test
   * `GDBox_curved_extrapolation` :: GD extrapolation basis curved box test
@@ -37,6 +38,8 @@ instructions for these codes are given below.
 The following scripts are in the directory `acoustic2D`
 
   * `box_run` :: script to check error and compute time step for simple box problem (runs simplicial, GD ghost basis, and GD extrapolation)
+  * `box_spectrum` :: script to compute the eigenvalue spectrum for simplicial, GD ghost basis, and GD extrapolation (data cached on git LFS)
+  * `compute_max_timestep` :: Compute the maximum stable time step for the Taylor time stepping method for each of the schemes (uses spectrums from `box_spectrum`)
   * `DGDisk2D` :: Disk with curved simplicial elements
   * `DGDisk2D_dt` :: compute the maximum stable time step with curved simplicial elements
   * `GDDGDisk2D` :: Disk with coupled ghost basis GD and curved simplicial elements
@@ -69,6 +72,11 @@ wget https://media.githubusercontent.com/media/bfam/GDComplexGeometries/master/a
 wget https://media.githubusercontent.com/media/bfam/GDComplexGeometries/master/acoustic2D/data/data_n7_r0_t15.mat -O acoustic2D/data/data_n7_r0_t15.mat
 wget https://media.githubusercontent.com/media/bfam/GDComplexGeometries/master/acoustic2D/data/data_n7_r1_t15.mat -O acoustic2D/data/data_n7_r1_t15.mat
 wget https://media.githubusercontent.com/media/bfam/GDComplexGeometries/master/acoustic2D/data/data_n7_r2_t15.mat -O acoustic2D/data/data_n7_r2_t15.mat
+wget https://media.githubusercontent.com/media/bfam/GDComplexGeometries/master/acoustic2D/data/box_spectrum_p1.mat -O acoustic2D/data/box_spectrum_p1.mat
+wget https://media.githubusercontent.com/media/bfam/GDComplexGeometries/master/acoustic2D/data/box_spectrum_p2.mat -O acoustic2D/data/box_spectrum_p2.mat
+wget https://media.githubusercontent.com/media/bfam/GDComplexGeometries/master/acoustic2D/data/box_spectrum_p3.mat -O acoustic2D/data/box_spectrum_p3.mat
+wget https://media.githubusercontent.com/media/bfam/GDComplexGeometries/master/acoustic2D/data/box_spectrum_p4.mat -O acoustic2D/data/box_spectrum_p4.mat
+wget https://media.githubusercontent.com/media/bfam/GDComplexGeometries/master/acoustic2D/data/box_spectrum_p5.mat -O acoustic2D/data/box_spectrum_p5.mat
 ```
 
 #### `curl` data download
@@ -79,6 +87,11 @@ curl https://media.githubusercontent.com/media/bfam/GDComplexGeometries/master/a
 curl https://media.githubusercontent.com/media/bfam/GDComplexGeometries/master/acoustic2D/data/data_n7_r0_t15.mat -o acoustic2D/data/data_n7_r0_t15.mat
 curl https://media.githubusercontent.com/media/bfam/GDComplexGeometries/master/acoustic2D/data/data_n7_r1_t15.mat -o acoustic2D/data/data_n7_r1_t15.mat
 curl https://media.githubusercontent.com/media/bfam/GDComplexGeometries/master/acoustic2D/data/data_n7_r2_t15.mat -o acoustic2D/data/data_n7_r2_t15.mat
+curl https://media.githubusercontent.com/media/bfam/GDComplexGeometries/master/acoustic2D/data/box_spectrum_p1.mat -o acoustic2D/data/box_spectrum_p1.mat
+curl https://media.githubusercontent.com/media/bfam/GDComplexGeometries/master/acoustic2D/data/box_spectrum_p2.mat -o acoustic2D/data/box_spectrum_p2.mat
+curl https://media.githubusercontent.com/media/bfam/GDComplexGeometries/master/acoustic2D/data/box_spectrum_p3.mat -o acoustic2D/data/box_spectrum_p3.mat
+curl https://media.githubusercontent.com/media/bfam/GDComplexGeometries/master/acoustic2D/data/box_spectrum_p4.mat -o acoustic2D/data/box_spectrum_p4.mat
+curl https://media.githubusercontent.com/media/bfam/GDComplexGeometries/master/acoustic2D/data/box_spectrum_p5.mat -o acoustic2D/data/box_spectrum_p5.mat
 ```
 
 ### Installing nodal-dg codes
