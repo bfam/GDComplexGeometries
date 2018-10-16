@@ -79,7 +79,8 @@ end
 % Create the GD element operators
 st = 0; x1 = []; x2 = [];
 for k = 1:length(grid)
-  OP.B{k} = gd_setup_curved_alias(grid{k}.N1, grid{k}.N2, p, 2*(p+2), grid{k}, Ng);
+  OP.B{k} = gd_setup_curved_alias(grid{k}.N1, grid{k}.N2, p, 2*(p+2), ...
+                                  grid{k}, Ng, [], true);
 
   % Set up the global vmap
   OP.B{k}.vmap = st + (1:length(OP.B{k}.x1))';
@@ -126,7 +127,7 @@ dt = compute_dt(OP)/2;
 if alpha == 1
   dt = compute_dt(OP) / 2;
 else
-  dt = compute_dt(OP) / 10;
+  dt = compute_dt(OP) / 2;
 end
 
 % clear this so we do not try to calate error

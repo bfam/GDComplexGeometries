@@ -111,6 +111,7 @@ for tstep = 1:Ntsteps
     else
       fprintf('>> energy0 = %e\n', eng0);
       fprintf('>> energy  = %e\n', eng(end));
+      fprintf('>> en/en0  = %e\n', eng(end) / eng0);
       fprintf('>> error   = %e\n', err(end));
       if compute_mass
         fprintf('>> dm_pr   = %+e\n', m_pr(end) - m_pr0);

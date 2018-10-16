@@ -59,9 +59,6 @@ for k = 1:length(OP.B)
   err_gd = err_gd + sum(err.w .* PJ .* (Pv2 - ev2).^2) / 2;
   err_gd = err_gd + sum(err.w .* PJ .* (Ppr - epr).^2) / 2;
 
-  eng_gd = eng_gd + sum(err.w .* PJ .* Pv1.^2) / 2;
-  eng_gd = eng_gd + sum(err.w .* PJ .* Pv2.^2) / 2;
-  eng_gd = eng_gd + sum(err.w .* PJ .* Ppr.^2) / 2;
 
   %{
   dv1 = B.P2F' * (B.P1F' * (B.w .* ((B.P1F * (B.P2F * v1(B.vmap(:)))) - ev1)));
@@ -73,13 +70,33 @@ for k = 1:length(OP.B)
   err_gd = err_gd + (dpr' * (B.MJI \ dpr));
   %}
 
+  if isfield(B, 'MJI_R')
+    MJI_R = B.MJI_R;
+    Pv1 = B.P2F' * (B.P1F' * (B.w .* (B.P1F * (B.P2F * v1(B.vmap(:))))));
+    Pv2 = B.P2F' * (B.P1F' * (B.w .* (B.P1F * (B.P2F * v2(B.vmap(:))))));
+    Ppr = B.P2F' * (B.P1F' * (B.w .* (B.P1F * (B.P2F * pr(B.vmap(:))))));
+    eng_gd = eng_gd + sum((MJI_R' \ Ppr).^2);
+    eng_gd = eng_gd + sum((MJI_R' \ Pv1).^2);
+    eng_gd = eng_gd + sum((MJI_R' \ Pv2).^2);
+  else
+    eng_gd = eng_gd + sum(err.w .* PJ .* Pv1.^2) / 2;
+    eng_gd = eng_gd + sum(err.w .* PJ .* Pv2.^2) / 2;
+    eng_gd = eng_gd + sum(err.w .* PJ .* Ppr.^2) / 2;
+  end
+
+
   if compute_mass
-      Pv1 = B.P2F' * (B.P1F' * (B.w .* (B.P1F * (B.P2F * v1(B.vmap(:))))));
-      Pv2 = B.P2F' * (B.P1F' * (B.w .* (B.P1F * (B.P2F * v2(B.vmap(:))))));
-      Ppr = B.P2F' * (B.P1F' * (B.w .* (B.P1F * (B.P2F * pr(B.vmap(:))))));
-    m_pr = m_pr + sum(B.w .* (B.P1F*(B.P2F*((B.MJI \ Ppr)))));
-    m_v1 = m_v1 + sum(B.w .* (B.P1F*(B.P2F*((B.MJI \ Pv1)))));
-    m_v2 = m_v2 + sum(B.w .* (B.P1F*(B.P2F*((B.MJI \ Pv2)))));
+    if isfield(B, 'MJI_R')
+      MJI_R = B.MJI_R;
+    else
+      MJI_R = chol(B.MJI);
+    end
+    Pv1 = B.P2F' * (B.P1F' * (B.w .* (B.P1F * (B.P2F * v1(B.vmap(:))))));
+    Pv2 = B.P2F' * (B.P1F' * (B.w .* (B.P1F * (B.P2F * v2(B.vmap(:))))));
+    Ppr = B.P2F' * (B.P1F' * (B.w .* (B.P1F * (B.P2F * pr(B.vmap(:))))));
+    m_pr = m_pr + sum(B.w .* (B.P1F*(B.P2F*((MJI_R \ (MJI_R' \ Ppr))))));
+    m_v1 = m_v1 + sum(B.w .* (B.P1F*(B.P2F*((MJI_R \ (MJI_R' \ Pv1))))));
+    m_v2 = m_v2 + sum(B.w .* (B.P1F*(B.P2F*((MJI_R \ (MJI_R' \ Pv2))))));
   end
 
 end

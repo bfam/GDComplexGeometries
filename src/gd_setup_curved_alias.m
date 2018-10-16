@@ -26,6 +26,10 @@
 %   Ng             :: (optional) Number of free ghost points [default Ng = p]
 %   err_quad_order :: (optional) order of quadrature to use in the error
 %                     calculation [default err_quad_order = quad_order]
+%   compute_MJI_R  :: (optional) boolean for specifying whether Cholesky
+%                     factorization of the weight-adjusted mass matrix should be
+%                     computed (if computed this will be used for the energy
+%                     calculation) [default compute_MJI_R = false]
 % Outputs:
 %   B :: GD operator struct
 % members of the struct:
@@ -82,7 +86,8 @@
 %     -> x1g, x2g           :: physicaly coordinates of error quadrature points
 %     -> J                  :: Jacobian determinant at error quadrature points
 %     -> w                  :: error quadrature weights
-function [B] = gd_setup_curved_alias(N1, N2, p, quad_order, grid, Ng, err_quad_order)
+function [B] = gd_setup_curved_alias(N1, N2, p, quad_order, grid, Ng, ...
+                                     err_quad_order, compute_MJI_R)
 
   if nargin < 6
     Ng = [];
@@ -97,6 +102,14 @@ function [B] = gd_setup_curved_alias(N1, N2, p, quad_order, grid, Ng, err_quad_o
   if isempty(err_quad_order)
     err_quad_order = quad_order;
   end
+
+  if nargin < 8
+    compute_MJI_R = [];
+  end
+  if isempty(compute_MJI_R)
+    compute_MJI_R = false;
+  end
+
 
   N_plot_points = 10;
 
@@ -289,6 +302,9 @@ function [B] = gd_setup_curved_alias(N1, N2, p, quad_order, grid, Ng, err_quad_o
   MJI = B.P2FT * (B.P1FT * diag(sparse(B.w ./ B.J)) * B.P1F) * B.P2F;
   B.massInv = @(v) (B.R1 \ (B.R1' \ (B.R2 \ (B.R2' \ (MJI * (B.R2 \ (B.R2' \ (B.R1 \ (B.R1' \ v(:))))))))));
   B.MJI = MJI;
+  if compute_MJI_R
+    B.MJI_R = chol(MJI);
+  end
 
   vec_wJI = reshape(B.w ./ B.J, numel(B.w2), numel(B.w1));
 
