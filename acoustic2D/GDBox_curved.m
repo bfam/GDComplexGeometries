@@ -16,3 +16,11 @@ for s = 0:4
   end
 end
 
+disp('FINAL: GDBox_curved')
+disp('p')
+disp(p)
+disp('error')
+disp(sol_err)
+rate = (log(sol_err(1:end-1)) - log(sol_err(2:end))) / log(2);
+disp('rate')
+disp(rate)
