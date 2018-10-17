@@ -6,8 +6,6 @@
 %   quad_order     :: order of quadrature to use for subcells
 %   lim1, lim2     :: limits for x1 and x2
 %   Ng             :: (optional) Number of free ghost points [default Ng = p]
-%   err_quad_order :: (optional) order of quadrature to use in the error
-%                     calculation [default err_quad_order = quad_order]
 % Outputs:
 %   B :: GD operator struct
 % members of the struct:
@@ -28,6 +26,7 @@
 %   P2F, P1F                :: 2D quadrature interpolation [apply: P1F*(P2F*q)]
 %   h                       :: grid spacing in physical coordinates
 %   x1, x2                  :: 2D GD coordinate points
+%   xq1, xq2                :: physicaly coordinates of quadrature points
 %   M                       :: 2D GD mass matrix
 %   R1_1d, R2_1d            :: 1D mass matrix Cholesky factors
 %   Sx, Sy                  :: functions to apply stiffness matrices
@@ -42,11 +41,6 @@
 %     -> x1, x2             :: physical coordinates of face GD points
 %     -> sJ                 :: surface Jacobian
 %     -> n1, n2             :: surface unit normal
-%   error                   :: structure for error calculation
-%     -> P2F, P1F           :: error quadrature interpolations
-%     -> x1g, x2g           :: physicaly coordinates of error quadrature points
-%     -> J                  :: Jacobian determinant at error quadrature points
-%     -> w                  :: error quadrature weights
 function [B] = gd_setup_affine(N1, N2, p, quad_order, lim1, lim2, Ng, err_quad_order)
 
   if nargin < 7
@@ -128,6 +122,12 @@ function [B] = gd_setup_affine(N1, N2, p, quad_order, lim1, lim2, Ng, err_quad_o
   x2 = x2(p-Ng+1:end-(p-Ng));
   [x1,x2] = meshgrid(x1, x2);
 
+  xq1 = lim1(2) * (1 + rq1_1d) / 2 + lim1(1) * (1 - rq1_1d) / 2;
+  xq2 = lim2(2) * (1 + rq2_1d) / 2 + lim2(1) * (1 - rq2_1d) / 2;
+  [xq1,xq2] = meshgrid(xq1, xq2);
+  B.xq1 = xq1;
+  B.xq2 = xq2;
+
   B.x1 = x1(:);
   B.x2 = x2(:);
 
@@ -206,24 +206,6 @@ function [B] = gd_setup_affine(N1, N2, p, quad_order, lim1, lim2, Ng, err_quad_o
   B.f{2}.rq = rq2_1d;
   B.f{3}.rq = rq1_1d;
   B.f{4}.rq = rq1_1d;
-
-  % Error calculation
-  [P1, w1, r1, rq1, Dq1] = ...
-    gd_quadrature(p, err_quad_order, N1, Ng1, N_plot_points);
-  [P2, w2, r2, rq2, Dq2] = ...
-    gd_quadrature(p, err_quad_order, N2, Ng2, N_plot_points);
-
-  x1g = lim1(2) * (1 + rq1) / 2 + lim1(1) * (1 - rq1) / 2;
-  x2g = lim2(2) * (1 + rq2) / 2 + lim2(1) * (1 - rq2) / 2;
-  [x1g,x2g] = meshgrid(x1g, x2g);
-
-  E.x1g = x1g(:);
-  E.x2g = x2g(:);
-
-  E.P1F = kron(P1, speye(size(P2,1)));
-  E.P2F = kron(speye(size(P1,2)), P2);
-  E.w  = kron(w1, w2);
-  B.error = E;
 end
 
 function E = ghost_extrapolation(N, gp, p)

@@ -50,6 +50,7 @@
 %   rq1, rq2                :: 2D quadrature grid
 %   r1, r2                  :: 2D GD grid
 %   x1, x2                  :: 2D GD coordinate points
+%   xq1, xq2                :: physicaly coordinates of quadrature points
 %   M                       :: 2D GD mass matrix
 %   R1, R2                  :: Dimension by dimension Cholesky factors
 %   D1, D2                  :: 2D differentiation matrices
@@ -79,7 +80,6 @@
 %     -> x1, x2             :: physical coordinates of face GD points
 %     -> sJ                 :: surface Jacobian
 %     -> n1, n2             :: surface unit normal
-%     -> xq1, xq2           :: physicaly coordinates of quadrature points
 function [B] = gd_setup_curved_alias(N1, N2, p, quad_order, grid, Ng, ...
                                      compute_MJI_R)
 
