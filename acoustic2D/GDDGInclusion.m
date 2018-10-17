@@ -49,8 +49,11 @@ BuildBCMaps2D_gddg(cyl.bc);
 vmapDG = reshape([1:Np*K], size(x));
 
 intC = 2*(N+1);
+OP.dg.cubature = DGMetricStorageUpdate(CubatureVolumeMesh2D(intC));
+%{
 OP.dg.cubature = CubatureVolumeMesh2D(intC);
 OP.dg.cubature.WJI = OP.dg.cubature.W ./ (OP.dg.cubature.J).^2;
+%}
 
 intG = 2*(N+1);
 OP.dg.gauss = GaussFaceMesh2D(intG);

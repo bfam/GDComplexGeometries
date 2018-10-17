@@ -86,8 +86,11 @@ for sr = 2:-1:0
     end
   else
     intC = 2*(N+1);
+    cubature = DGMetricStorageUpdate(CubatureVolumeMesh2D(intC));
+    %{
     cubature = CubatureVolumeMesh2D(intC);
     cubature.WJI = cubature.W ./ (cubature.J).^2;
+    %}
   end
 end
 

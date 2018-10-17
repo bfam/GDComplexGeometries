@@ -43,8 +43,13 @@ if(~isempty(k))
   MakeCylinder2D(outfaces, 1, 0, 0);
 end
 intC = 2*(N+1) + 1;
+OP.dg.cubature = DGMetricStorageUpdate(CubatureVolumeMesh2D(intC));
+
+%{
 OP.dg.cubature = CubatureVolumeMesh2D(intC);
 OP.dg.cubature.WJI = OP.dg.cubature.W ./ (OP.dg.cubature.J).^2;
+%}
+
 
 intG = 2*(N+1);
 OP.dg.gauss = GaussFaceMesh2D(intG);
