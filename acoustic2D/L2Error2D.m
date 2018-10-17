@@ -33,10 +33,10 @@ for k = 1:length(OP.B)
   PJ = B.J;
 
   if isa(Exact2D, 'function_handle')
-    x1g = B.x1g;
-    x2g = B.x2g;
+    xq1 = B.xq1(:);
+    xq2 = B.xq2(:);
 
-    [ev1, ev2, epr] = Exact2D(time, x1g, x2g);
+    [ev1, ev2, epr] = Exact2D(time, xq1, xq2);
   else
     ev1 = Pv1;
     ev2 = Pv2;
@@ -101,11 +101,11 @@ if isfield(OP, 'dg')
   Pv2 = c.V*v2(vmapDG);
   Ppr = c.V*pr(vmapDG);
 
-  x1g = c.V*OP.x1(vmapDG);
-  x2g = c.V*OP.x2(vmapDG);
+  xq1 = c.V*OP.x1(vmapDG);
+  xq2 = c.V*OP.x2(vmapDG);
 
   if isa(Exact2D, 'function_handle')
-    [ev1, ev2, epr] = Exact2D(time, x1g, x2g);
+    [ev1, ev2, epr] = Exact2D(time, xq1, xq2);
   else
     ev1 = Pv1;
     ev2 = Pv2;
