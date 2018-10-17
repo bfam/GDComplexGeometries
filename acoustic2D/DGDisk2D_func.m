@@ -46,9 +46,6 @@ intC = 2*(N+1) + 1;
 OP.dg.cubature = CubatureVolumeMesh2D(intC);
 OP.dg.cubature.WJI = OP.dg.cubature.W ./ (OP.dg.cubature.J).^2;
 
-OP.dg.cubature_err = CubatureVolumeMesh2D(5*intC);
-OP.dg.cubature_err.WJI = OP.dg.cubature_err.W ./ (OP.dg.cubature_err.J).^2;
-
 intG = 2*(N+1);
 OP.dg.gauss = GaussFaceMesh2D(intG);
 [OP.dg.gauss.mapB, OP.dg.gauss.mapMor] = ...

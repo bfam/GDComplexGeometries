@@ -92,11 +92,7 @@ eng = eng_gd;
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 if isfield(OP, 'dg')
 
-  if isfield(OP.dg, 'cubature_err')
-    c = OP.dg.cubature_err;
-  else
-    c = OP.dg.cubature;
-  end
+  c = OP.dg.cubature;
   Pv1 = c.V*v1(vmapDG);
   Pv2 = c.V*v2(vmapDG);
   Ppr = c.V*pr(vmapDG);

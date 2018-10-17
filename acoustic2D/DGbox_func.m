@@ -44,7 +44,6 @@ intC = 2*(N+1);
 OP.dg.cubature = CubatureVolumeMesh2D(intC);
 % divide by J^2 because W includes J
 OP.dg.cubature.WJI = OP.dg.cubature.W ./ (OP.dg.cubature.J).^2;
-OP.dg.cubature_err = OP.dg.cubature;
 
 intG = 2*(N+1);
 OP.dg.gauss = GaussFaceMesh2D(intG);
