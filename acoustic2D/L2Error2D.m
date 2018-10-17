@@ -74,17 +74,12 @@ for k = 1:length(OP.B)
 
 
   if compute_mass
-    if isfield(B, 'MJI_R')
-      MJI_R = B.MJI_R;
-    else
-      MJI_R = chol(B.MJI);
-    end
-    Pv1 = B.P2F' * (B.P1F' * (B.w .* (B.P1F * (B.P2F * v1(B.vmap(:))))));
-    Pv2 = B.P2F' * (B.P1F' * (B.w .* (B.P1F * (B.P2F * v2(B.vmap(:))))));
-    Ppr = B.P2F' * (B.P1F' * (B.w .* (B.P1F * (B.P2F * pr(B.vmap(:))))));
-    m_pr = m_pr + sum(B.w .* (B.P1F*(B.P2F*((MJI_R \ (MJI_R' \ Ppr))))));
-    m_v1 = m_v1 + sum(B.w .* (B.P1F*(B.P2F*((MJI_R \ (MJI_R' \ Pv1))))));
-    m_v2 = m_v2 + sum(B.w .* (B.P1F*(B.P2F*((MJI_R \ (MJI_R' \ Pv2))))));
+    Pv1 = B.P1F*(B.P2F*v1(B.vmap(:)));
+    Pv2 = B.P1F*(B.P2F*v2(B.vmap(:)));
+    Ppr = B.P1F*(B.P2F*pr(B.vmap(:)));
+    m_pr = m_pr + sum(B.w .* PJ .* Ppr);
+    m_v1 = m_v1 + sum(B.w .* PJ .* Pv1);
+    m_v2 = m_v2 + sum(B.w .* PJ .* Pv2);
   end
 
 end

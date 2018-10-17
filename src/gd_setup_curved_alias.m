@@ -262,7 +262,8 @@ function [B] = gd_setup_curved_alias(N1, N2, p, quad_order, grid, Ng, ...
   xg1_2 = B.P1F * (B.P2F * B.x1_2);
   xg2_2 = B.P1F * (B.P2F * B.x2_2);
 
-  B.J = xg1_1 .* xg2_2 - xg1_2 .* xg2_1;
+  B.J = B.P1F * (B.P2F * (B.x1_1 .* B.x2_2 - B.x1_2 .* B.x2_1));
+  % B.J = xg1_1 .* xg2_2 - xg1_2 .* xg2_1
 
   B.r1_1 =  xg2_2 ./ B.J;
   B.r2_1 = -xg2_1 ./ B.J;
