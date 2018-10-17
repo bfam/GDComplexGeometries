@@ -80,7 +80,7 @@ end
 st = 0; x1 = []; x2 = [];
 for k = 1:length(grid)
   OP.B{k} = gd_setup_curved_alias(grid{k}.N1, grid{k}.N2, p, 2*(p+2), ...
-                                  grid{k}, Ng, [], true);
+                                  grid{k}, Ng, true);
 
   % Set up the global vmap
   OP.B{k}.vmap = st + (1:length(OP.B{k}.x1))';

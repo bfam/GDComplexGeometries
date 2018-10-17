@@ -24,8 +24,6 @@
 %                          projection of the volume coordinate transform into
 %                          the GD space)
 %   Ng             :: (optional) Number of free ghost points [default Ng = p]
-%   err_quad_order :: (optional) order of quadrature to use in the error
-%                     calculation [default err_quad_order = quad_order]
 %   compute_MJI_R  :: (optional) boolean for specifying whether Cholesky
 %                     factorization of the weight-adjusted mass matrix should be
 %                     computed (if computed this will be used for the energy
@@ -81,13 +79,9 @@
 %     -> x1, x2             :: physical coordinates of face GD points
 %     -> sJ                 :: surface Jacobian
 %     -> n1, n2             :: surface unit normal
-%   error                   :: structure for error calculation
-%     -> P2F, P1F           :: error quadrature interpolations
-%     -> x1g, x2g           :: physicaly coordinates of error quadrature points
-%     -> J                  :: Jacobian determinant at error quadrature points
-%     -> w                  :: error quadrature weights
+%     -> xq1, xq2           :: physicaly coordinates of quadrature points
 function [B] = gd_setup_curved_alias(N1, N2, p, quad_order, grid, Ng, ...
-                                     err_quad_order, compute_MJI_R)
+                                     compute_MJI_R)
 
   if nargin < 6
     Ng = [];
@@ -97,13 +91,6 @@ function [B] = gd_setup_curved_alias(N1, N2, p, quad_order, grid, Ng, ...
   end
 
   if nargin < 7
-    err_quad_order = [];
-  end
-  if isempty(err_quad_order)
-    err_quad_order = quad_order;
-  end
-
-  if nargin < 8
     compute_MJI_R = [];
   end
   if isempty(compute_MJI_R)
@@ -191,6 +178,8 @@ function [B] = gd_setup_curved_alias(N1, N2, p, quad_order, grid, Ng, ...
   B.rq2 = rq2(:);
   xq1 = grid.x1(rq1, rq2);
   xq2 = grid.x2(rq1, rq2);
+  B.xq1 = xq1;
+  B.xq2 = xq2;
 
   % L2 projection of (x,y) to GD basis
   x1 = R2 \ (R2' \ (P2' * (((((w2 * w1') .* xq1) * P1) / R1) / R1')));
@@ -396,34 +385,6 @@ function [B] = gd_setup_curved_alias(N1, N2, p, quad_order, grid, Ng, ...
   B.f{4}.sJ =  sqrt(x1_1.^2 + x2_1.^2);
   B.f{4}.n1 = -x2_1 ./ B.f{4}.sJ;
   B.f{4}.n2 =  x1_1 ./ B.f{4}.sJ;
-
-  % Error calculation
-  [P1, w1, r1, rq1, Dq1] = ...
-    gd_quadrature(p, err_quad_order, N1, Ng1, N_plot_points);
-  [P2, w2, r2, rq2, Dq2] = ...
-    gd_quadrature(p, err_quad_order, N2, Ng2, N_plot_points);
-
-  [rq1,rq2] = meshgrid(rq1, rq2);
-
-  x1g = grid.x1(rq1, rq2);
-  x2g = grid.x2(rq1, rq2);
-
-  E.P2F = kron(speye(size(P1,2)), P2);
-  E.P1F = kron(P1, speye(size(P2,1)));
-
-  x1_1 = x1g * Dq1';
-  x2_1 = x2g * Dq1';
-  x1_2 = Dq2 * x1g;
-  x2_2 = Dq2 * x2g;
-
-  J = x1_1 .* x2_2 - x1_2 .* x2_1;
-
-  E.x1g = x1g(:);
-  E.x2g = x2g(:);
-  E.J = J(:);
-  E.w  = kron(w1, w2);
-
-  B.error = E;
 end
 
 % interpolates the function x with an enpoint preserving polynomial of degree Nc

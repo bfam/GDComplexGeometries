@@ -25,29 +25,17 @@ for k = 1:length(OP.B)
   end
 
   B = OP.B{k};
-  err = B.error;
 
-  x1g = err.x1g;
-  x2g = err.x2g;
+  Pv1 = B.P1F*(B.P2F*v1(B.vmap(:)));
+  Pv2 = B.P1F*(B.P2F*v2(B.vmap(:)));
+  Ppr = B.P1F*(B.P2F*pr(B.vmap(:)));
 
-  if isfield(B, 'E1')
-    E = kron(B.E1, B.E2);
-    Pv1 = err.P1F*(err.P2F*(E*v1(B.vmap(:))));
-    Pv2 = err.P1F*(err.P2F*(E*v2(B.vmap(:))));
-    Ppr = err.P1F*(err.P2F*(E*pr(B.vmap(:))));
-  else
-    Pv1 = err.P1F*(err.P2F*v1(B.vmap(:)));
-    Pv2 = err.P1F*(err.P2F*v2(B.vmap(:)));
-    Ppr = err.P1F*(err.P2F*pr(B.vmap(:)));
-  end
-
-  if isfield(B, 'isaffine')
-    PJ = B.J;
-  else
-    PJ = err.J;
-  end
+  PJ = B.J;
 
   if isa(Exact2D, 'function_handle')
+    x1g = B.x1g;
+    x2g = B.x2g;
+
     [ev1, ev2, epr] = Exact2D(time, x1g, x2g);
   else
     ev1 = Pv1;
@@ -55,9 +43,9 @@ for k = 1:length(OP.B)
     epr = Ppr;
   end
 
-  err_gd = err_gd + sum(err.w .* PJ .* (Pv1 - ev1).^2);
-  err_gd = err_gd + sum(err.w .* PJ .* (Pv2 - ev2).^2);
-  err_gd = err_gd + sum(err.w .* PJ .* (Ppr - epr).^2);
+  err_gd = err_gd + sum(B.w .* PJ .* (Pv1 - ev1).^2);
+  err_gd = err_gd + sum(B.w .* PJ .* (Pv2 - ev2).^2);
+  err_gd = err_gd + sum(B.w .* PJ .* (Ppr - epr).^2);
 
 
   %{
@@ -79,9 +67,9 @@ for k = 1:length(OP.B)
     eng_gd = eng_gd + sum((MJI_R' \ Pv1).^2) / 2;
     eng_gd = eng_gd + sum((MJI_R' \ Pv2).^2) / 2;
   else
-    eng_gd = eng_gd + sum(err.w .* PJ .* Pv1.^2) / 2;
-    eng_gd = eng_gd + sum(err.w .* PJ .* Pv2.^2) / 2;
-    eng_gd = eng_gd + sum(err.w .* PJ .* Ppr.^2) / 2;
+    eng_gd = eng_gd + sum(B.w .* PJ .* Pv1.^2) / 2;
+    eng_gd = eng_gd + sum(B.w .* PJ .* Pv2.^2) / 2;
+    eng_gd = eng_gd + sum(B.w .* PJ .* Ppr.^2) / 2;
   end
 
 
