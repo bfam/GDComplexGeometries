@@ -55,9 +55,9 @@ for k = 1:length(OP.B)
     epr = Ppr;
   end
 
-  err_gd = err_gd + sum(err.w .* PJ .* (Pv1 - ev1).^2) / 2;
-  err_gd = err_gd + sum(err.w .* PJ .* (Pv2 - ev2).^2) / 2;
-  err_gd = err_gd + sum(err.w .* PJ .* (Ppr - epr).^2) / 2;
+  err_gd = err_gd + sum(err.w .* PJ .* (Pv1 - ev1).^2);
+  err_gd = err_gd + sum(err.w .* PJ .* (Pv2 - ev2).^2);
+  err_gd = err_gd + sum(err.w .* PJ .* (Ppr - epr).^2);
 
 
   %{
@@ -75,9 +75,9 @@ for k = 1:length(OP.B)
     Pv1 = B.P2F' * (B.P1F' * (B.w .* (B.P1F * (B.P2F * v1(B.vmap(:))))));
     Pv2 = B.P2F' * (B.P1F' * (B.w .* (B.P1F * (B.P2F * v2(B.vmap(:))))));
     Ppr = B.P2F' * (B.P1F' * (B.w .* (B.P1F * (B.P2F * pr(B.vmap(:))))));
-    eng_gd = eng_gd + sum((MJI_R' \ Ppr).^2);
-    eng_gd = eng_gd + sum((MJI_R' \ Pv1).^2);
-    eng_gd = eng_gd + sum((MJI_R' \ Pv2).^2);
+    eng_gd = eng_gd + sum((MJI_R' \ Ppr).^2) / 2;
+    eng_gd = eng_gd + sum((MJI_R' \ Pv1).^2) / 2;
+    eng_gd = eng_gd + sum((MJI_R' \ Pv2).^2) / 2;
   else
     eng_gd = eng_gd + sum(err.w .* PJ .* Pv1.^2) / 2;
     eng_gd = eng_gd + sum(err.w .* PJ .* Pv2.^2) / 2;
@@ -129,9 +129,9 @@ if isfield(OP, 'dg')
     epr = Ppr;
   end
 
-  err_dg =          sum(sum(diag(c.w) * (c.J .* (Pv1 - ev1).^2))) / 2;
-  err_dg = err_dg + sum(sum(diag(c.w) * (c.J .* (Pv2 - ev2).^2))) / 2;
-  err_dg = err_dg + sum(sum(diag(c.w) * (c.J .* (Ppr - epr).^2))) / 2;
+  err_dg =          sum(sum(diag(c.w) * (c.J .* (Pv1 - ev1).^2)));
+  err_dg = err_dg + sum(sum(diag(c.w) * (c.J .* (Pv2 - ev2).^2)));
+  err_dg = err_dg + sum(sum(diag(c.w) * (c.J .* (Ppr - epr).^2)));
 
   eng_dg =          sum(sum(diag(c.w) * (c.J .* (Pv1).^2))) / 2;
   eng_dg = eng_dg + sum(sum(diag(c.w) * (c.J .* (Pv2).^2))) / 2;
@@ -151,8 +151,9 @@ else
 end
 
 err = sqrt(err);
-eng = sqrt(eng);
 err_dg = sqrt(err_dg);
-eng_dg = sqrt(eng_dg);
 err_gd = sqrt(err_gd);
-eng_gd = sqrt(eng_gd);
+
+eng = (eng);
+eng_dg = (eng_dg);
+eng_gd = (eng_gd);

@@ -22,7 +22,7 @@ for p = [3]
              T_CF{p}, eng_CF{p}(2:end)/eng_CF{p}(1), '-')
     title('time versus energy')
     legend('watertight', 'discontinuous', 'reference')
-    % matlab2tikz(sprintf('GDbox_energy_n%d_Ng%d.tikz', 2*p+1, Ng))
+    matlab2tikz(sprintf('GDbox_energy_n%d_Ng%d.tikz', 2*p+1, Ng))
 
     figure(2)
     semilogy(T_CM{p}, abs(m_pr_CM{p}(2:end) - m_pr_CM{p}(1)), '-', ...
@@ -30,20 +30,20 @@ for p = [3]
              T_CF{p}, abs(m_pr_CF{p}(2:end) - m_pr_CF{p}(1)), '-')
     title('time versus conservation of pressure error')
     legend('watertight', 'discontinuous', 'reference')
-    % matlab2tikz(sprintf('GDbox_mass_pr_n%d_Ng%d.tikz', 2*p+1, Ng))
+    matlab2tikz(sprintf('GDbox_mass_pr_n%d_Ng%d.tikz', 2*p+1, Ng))
 
     figure(3)
     semilogy(T_CM{p}, abs(m_vx_CM{p}(2:end) - m_vx_CM{p}(1)), '-', ...
              T_DM{p}, abs(m_vx_DM{p}(2:end) - m_vx_DM{p}(1)), '-', ...
              T_CF{p}, abs(m_vx_CF{p}(2:end) - m_vx_CF{p}(1)), '-')
     title('time versus conservation of vx error')
-    % matlab2tikz(sprintf('GDbox_mass_vx_n%d_Ng%d.tikz', 2*p+1, Ng))
+    matlab2tikz(sprintf('GDbox_mass_vx_n%d_Ng%d.tikz', 2*p+1, Ng))
 
     figure(4)
     semilogy(T_CM{p}, abs(m_vy_CM{p}(2:end) - m_vy_CM{p}(1)), '-', ...
              T_DM{p}, abs(m_vy_DM{p}(2:end) - m_vy_DM{p}(1)), '-', ...
              T_CF{p}, abs(m_vy_CF{p}(2:end) - m_vy_CF{p}(1)), '-')
     title('time versus conservation of vy error')
-    % matlab2tikz(sprintf('GDbox_mass_vy_n%d_Ng%d.tikz', 2*p+1, Ng))
+    matlab2tikz(sprintf('GDbox_mass_vy_n%d_Ng%d.tikz', 2*p+1, Ng))
   end
 end
