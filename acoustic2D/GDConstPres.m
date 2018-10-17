@@ -16,6 +16,6 @@ for p = 3
     semilogy(T_CM{p}, err_CM{p}, '-', ...
              T_DM{p}, err_DM{p}, '-', ...
              T_CF{p}, err_CF{p}, '-')
-    %matlab2tikz(sprintf('constant_preserving_error_n%d_Ng%d.tikz', 2*p+1, Ng))
+    matlab2tikz(sprintf('constant_preserving_error_n%d_Ng%d.tikz', 2*p+1, Ng))
   end
 end

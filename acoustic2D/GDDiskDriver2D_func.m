@@ -5,9 +5,7 @@
 %   sr      :: level of refiment, e.g, N-> N0*2^sr
 %   root    :: (optional) which root for the solution to use (default: [])
 %              NOTE: if isempty(root) then the codes does not solve the disk
-%                    problem but instead computes the maximum stable timestep
-%                    using bisection on the time step size and a random initial
-%                    solution
+%                    problem but instead computes the operator matrix
 %   Ng      :: (optional) Number of free ghost points to use (default: p)
 % Outputs:
 %   T    :: time
@@ -155,47 +153,5 @@ if ~isempty(root) % Solve PDE
   % A = AcousticCreateMatrix(OP);
   % spy(A);
 else % Compute maximum time step
-  dt = compute_dt(OP)/2;
-  Exact2D = [];
-  rng(0);
-  v1 = rand(size(x1));
-  v2 = rand(size(x1));
-  pr = rand(size(x1));
-
-  bracket = [nan, nan];
-  dt = compute_dt(OP);
-  dt0 = dt;
-
-  while sum(isfinite(bracket)) < 2
-    [~,~,~,~,~,eng] = Acoustic2D(OP, v1, v2, pr, dt, 100, 2*p+2);
-    if eng(end) < eng(1)
-      bracket(1) = dt;
-      if isfinite(bracket(2))
-        break
-      else
-        dt = 2 * dt;
-      end
-    else
-      bracket(2) = dt;
-      if isfinite(bracket(1))
-        break
-      else
-        dt = 0.5 * dt;
-      end
-    end
-  end
-
-  while (bracket(2) - bracket(1)) > 1e-3 * bracket(1)
-    dt = (bracket(1) + bracket(2)) / 2;
-    [~,~,~,~,~,eng] = Acoustic2D(OP, v1, v2, pr, dt, 100, 2*p+2);
-    eng = eng(end) / eng(1);
-
-    if eng < 1
-      bracket(1) = dt;
-    else
-      bracket(2) = dt;
-    end
-    disp(bracket)
-  end
-  T = dt;
+  T = ComputeA(OP);
 end

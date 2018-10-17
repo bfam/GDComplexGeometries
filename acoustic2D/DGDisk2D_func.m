@@ -5,9 +5,7 @@
 %   mesh_base :: mesh used is sprintf('%s_r%d.msh', mesh_base, sr)
 %   root      :: (optional) which root for the solution to use (default: [])
 %                NOTE: if isempty(root) then the codes does not solve the disk
-%                      problem but instead computes the maximum stable timestep
-%                      using bisection on the time step size and a random
-%                      initial solution
+%                      problem but instead computes the operator matrix
 % Outputs:
 %   T    :: time
 %   err  :: energy
@@ -15,12 +13,12 @@ function [T,err] = DGDisk2D_func(p, sr, mesh_base, root)
 
 fprintf('DGDisk2D_func(%3d, %3d, %s)\n', p, sr, mesh_base)
 
-Globals2D_gddg
-addpath([NODAL_DG_ROOT, '/nodal-dg/Codes1.1/Codes1D'])
-addpath([NODAL_DG_ROOT, '/nodal-dg/Codes1.1/Codes2D'])
-addpath([NODAL_DG_ROOT, '/nodal-dg/Codes1.1/ServiceRoutines'])
 addpath ../src
 addpath ../geo/disk
+Globals2D_gddg
+addpath([NODAL_DG_ROOT, '/Codes1.1/Codes1D'])
+addpath([NODAL_DG_ROOT, '/Codes1.1/Codes2D'])
+addpath([NODAL_DG_ROOT, '/Codes1.1/ServiceRoutines'])
 
 Globals2D;
 
@@ -95,47 +93,5 @@ if nargin == 4
   Ntsteps = ceil(FinalTime/dt); dt = FinalTime/Ntsteps;
   [v1,v2,pr,T,err] = Acoustic2D(OP, v1, v2, pr, dt, Ntsteps, 2*p+2);
 else
-  dt = compute_dt(OP)/2;
-  Exact2D = [];
-  rng(0);
-  v1 = rand(size(x1));
-  v2 = rand(size(x1));
-  pr = rand(size(x1));
-
-  bracket = [nan, nan];
-  dt = compute_dt(OP);
-  dt0 = dt;
-
-  while sum(isfinite(bracket)) < 2
-    [~,~,~,~,~,eng] = Acoustic2D(OP, v1, v2, pr, dt, 100, 2*p+2);
-    if eng(end) < eng(1)
-      bracket(1) = dt;
-      if isfinite(bracket(2))
-        break
-      else
-        dt = 2 * dt;
-      end
-    else
-      bracket(2) = dt;
-      if isfinite(bracket(1))
-        break
-      else
-        dt = 0.5 * dt;
-      end
-    end
-  end
-
-  while (bracket(2) - bracket(1)) > 1e-3 * bracket(1)
-    dt = (bracket(1) + bracket(2)) / 2;
-    [~,~,~,~,~,eng] = Acoustic2D(OP, v1, v2, pr, dt, 100, 2*p+2);
-    eng = eng(end) / eng(1);
-
-    if eng < 1
-      bracket(1) = dt;
-    else
-      bracket(2) = dt;
-    end
-    disp(bracket)
-  end
-  T = dt;
+  T = ComputeA(OP);
 end
