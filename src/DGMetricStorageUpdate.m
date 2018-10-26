@@ -2,6 +2,7 @@ function C = DGMetricStorageUpdate(C)
 Globals2D;
 
 C.W = C.W ./ C.J;
+J = MassMatrix \ (C.V' * (C.W .* C.J));
 C.J = C.V * J;
 
 C.rx = (C.V * (J .* rx)) ./ C.J;

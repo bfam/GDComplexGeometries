@@ -256,13 +256,22 @@ function [B] = gd_setup_curved_alias(N1, N2, p, quad_order, grid, Ng, ...
   B.x2_1 = Dr * B.x2;
   B.x1_2 = Ds * B.x1;
   B.x2_2 = Ds * B.x2;
+  % B.J = B.P1F * (B.P2F * (B.x1_1 .* B.x2_2 - B.x1_2 .* B.x2_1));
+
+  % compute the Jacobian using data from the quadrature nodes
+  xq1_1 = P2 * ((x1 * P1') * Dq1');
+  xq1_2 = (Dq2 * (P2 * x1)) * P1';
+  xq2_1 = P2 * ((x2 * P1') * Dq1');
+  xq2_2 = (Dq2 * (P2 * x2)) * P1';
+  Jq = xq1_1 .* xq2_2 - xq1_2 .* xq2_1;
+  % project back to GD space then interpolate for storage
+  J = R2 \ (R2' \ (P2' * (((((w2 * w1') .* Jq) * P1) / R1) / R1')));
+  B.J = B.P1F * (B.P2F * J(:));
 
   xg1_1 = B.P1F * (B.P2F * B.x1_1);
   xg2_1 = B.P1F * (B.P2F * B.x2_1);
   xg1_2 = B.P1F * (B.P2F * B.x1_2);
   xg2_2 = B.P1F * (B.P2F * B.x2_2);
-
-  B.J = B.P1F * (B.P2F * (B.x1_1 .* B.x2_2 - B.x1_2 .* B.x2_1));
   % B.J = xg1_1 .* xg2_2 - xg1_2 .* xg2_1
 
   B.r1_1 =  xg2_2 ./ B.J;
