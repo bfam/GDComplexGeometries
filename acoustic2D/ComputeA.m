@@ -5,7 +5,9 @@ function A = compute(OP)
 Np = numel(OP.x1);
 A = eye(3*Np);
 for k = 1:3*Np
-  disp([k, 3*Np])
+  if mod(k, 250) == 1
+    disp([k, 3*Np])
+  end
   v1 = A(1:Np,k);
   v2 = A(Np + (1:Np),k);
   pr = A(2*Np + (1:Np),k);
