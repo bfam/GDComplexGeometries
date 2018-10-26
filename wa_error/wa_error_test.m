@@ -9,10 +9,10 @@ fig = 0;
 do_plotting = false;
 
 % set to true dump tikz data
-do_tikz = false;
+do_tikz = true;
 
 % beta value for the underlying coordinate transform
-for beta = [0.22, 1/8]
+for beta = [1/8, 0.22]
   % Ng = 0 is extrapolation method and Ng = 1 is ghost basis
   for Ng = [0, 1]
     % mode of the function being approximated
@@ -46,34 +46,35 @@ for beta = [0.22, 1/8]
         end
 
         if do_tikz
+          h = 1:length(N);
           fprintf('        %% beta = %e\n', beta)
-          fprintf('        %% mode k = %d\n', k);
+          fprintf('        %% mode k = %d\n', k / (pi/2));
           fprintf('        %% poly order = %d\n', 2*p+1)
           fprintf('        %% num ghost = %d\n', Ng*p)
           fprintf('        %% num gauss quad pnts = %d\n', Np_q)
           fprintf('        \\addplot[color=grn,mark=triangle*,line width=1] plot coordinates {%%\n')
           for j = 1:length(N)
-            fprintf('          (%e, %e)\n', h(j), errL2(j))
+            fprintf('          (%d, %e)\n', h(j)-1, errL2(j))
           end
           fprintf('        };\n')
           fprintf('        \\addplot[color=red,mark=diamond*,line width=1] plot coordinates {%%\n')
           for j = 1:length(N)
-            fprintf('          (%e, %e)\n', h(j), errWA(j))
+            fprintf('          (%d, %e)\n', h(j)-1, errWA(j))
           end
           fprintf('        };\n')
-          fprintf('        \\addplot[color=grn,mark=square*,line width=1] plot coordinates {%%\n')
+          fprintf('        \\addplot[color=prp,mark=square*,line width=1] plot coordinates {%%\n')
           for j = 1:length(N)
-            fprintf('          (%e, %e)\n', h(j), errJnWA(j))
+            fprintf('          (%d, %e)\n', h(j)-1, errJnWA(j))
           end
           fprintf('        };\n')
-            fprintf('        \\addplot[color=red,mark=pentagon*,line width=1,dashed] plot coordinates {%%\n')
+            fprintf('        \\addplot[color=org,mark=pentagon*,line width=1,dashed] plot coordinates {%%\n')
           for j = 1:length(N)
-            fprintf('          (%e, %e)\n', h(j), errWA(j)-errL2(j))
+            fprintf('          (%d, %e)\n', h(j)-1, errWA(j)-errL2(j))
           end
           fprintf('        };\n')
           fprintf('        \\addplot[color=blu,mark=*,line width=1,dashed] plot coordinates {%%\n')
           for j = 1:length(N)
-            fprintf('          (%e, %e)\n', h(j), errJnWA(j)-errL2(j))
+            fprintf('          (%d, %e)\n', h(j)-1, errJnWA(j)-errL2(j))
           end
           fprintf('        };\n\n\n')
         end

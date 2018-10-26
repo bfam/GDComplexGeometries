@@ -57,11 +57,12 @@ M2 = I2' * (diag(sparse(W2)) * I2);
 % approximate metric terms, compute at quadrature nodes then project to GD space
 x = I2 * (M2 \ (I2' * (W2 .* x(rq2, sq2))));
 y = I2 * (M2 \ (I2' * (W2 .* y(rq2, sq2))));
-xr = I2 * (M2 \ (I2' * (W2 .* (Dr2 * x))));
-xs = I2 * (M2 \ (I2' * (W2 .* (Ds2 * x))));
-yr = I2 * (M2 \ (I2' * (W2 .* (Dr2 * y))));
-ys = I2 * (M2 \ (I2' * (W2 .* (Ds2 * y))));
+xr = Dr2 * x;
+xs = Ds2 * x;
+yr = Dr2 * y;
+ys = Ds2 * y;
 Jn = xr.*ys - xs.*yr;
+Jn = I2 * (M2 \ (I2' * (W2 .* Jn)));
 
 % inexact WADG inverse mass matrix
 MJnI = I2' * (diag(sparse(W2 ./ Jn))) * I2;
